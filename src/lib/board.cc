@@ -1,19 +1,16 @@
-#include <board.h>
-
-#include <iostream>
-#include <sstream>
-
 #include <bishop.h>
-#include <knight.h>
+#include <board.h>
+#include <iostream>
 #include <king.h>
+#include <knight.h>
 #include <pawn.h>
-#include <rook.h>
 #include <queen.h>
-
+#include <rook.h>
+#include <sstream>
 
 namespace chess {
 
-template<typename T>
+template <typename T>
 void MakePieceAndGiveToPlayer(Player* player, ChessBoard& board, int x, int y) {
   auto ptr = std::make_unique<T>(player->GetColor(), x, y);
   T* raw_ptr = ptr.get();
@@ -26,7 +23,7 @@ ChessBoard Board::CreateBoard(Player* white, Player* black) {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       board[i][j] = nullptr;
-    } 
+    }
   }
 
   for (int i = 0; i < 8; i++) {
@@ -63,7 +60,7 @@ Board::Board(Player* white, Player* black) {
 }
 **/
 
-std::string Board::PrintBoard(const ChessBoard& board) {
+std::string Board::PrintBoard(ChessBoard const& board) {
   char header_char = 'A';
   int header_int = 1;
   std::stringstream boardstr;
@@ -83,10 +80,10 @@ std::string Board::PrintBoard(const ChessBoard& board) {
         continue;
       } else {
         header_char = 'A';
-        if (board[i-1][j-1] == nullptr) {
+        if (board[i - 1][j - 1] == nullptr) {
           boardstr << ' ';
         } else {
-          boardstr << board[i-1][j-1]->ToString();
+          boardstr << board[i - 1][j - 1]->ToString();
         }
       }
       boardstr << ' ';
@@ -95,4 +92,4 @@ std::string Board::PrintBoard(const ChessBoard& board) {
   }
   return boardstr.str();
 }
-}
+}  // namespace chess

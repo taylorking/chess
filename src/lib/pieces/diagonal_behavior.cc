@@ -3,7 +3,8 @@
 namespace chess {
 namespace {
 
-void AddUpLeftMoves(Piece const* piece, const ChessBoard& board, bool max_dist, std::vector<Move>& moves) {
+void AddUpLeftMoves(Piece const* piece, ChessBoard const& board, bool max_dist,
+                    std::vector<Move>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x--;
   y--;
@@ -16,10 +17,12 @@ void AddUpLeftMoves(Piece const* piece, const ChessBoard& board, bool max_dist, 
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y)); break;
+    moves.push_back(Move(x, y));
+    break;
   }
 }
-void AddUpRightMoves(Piece const* piece, const ChessBoard& board, bool max_dist, std::vector<Move>& moves) {
+void AddUpRightMoves(Piece const* piece, ChessBoard const& board, bool max_dist,
+                     std::vector<Move>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x--;
   y++;
@@ -32,10 +35,12 @@ void AddUpRightMoves(Piece const* piece, const ChessBoard& board, bool max_dist,
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y)); break;
+    moves.push_back(Move(x, y));
+    break;
   }
 }
-void AddDownLeftMoves(Piece const* piece, const ChessBoard& board, bool max_dist, std::vector<Move>& moves) {
+void AddDownLeftMoves(Piece const* piece, ChessBoard const& board,
+                      bool max_dist, std::vector<Move>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x++;
   y--;
@@ -48,11 +53,12 @@ void AddDownLeftMoves(Piece const* piece, const ChessBoard& board, bool max_dist
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y)); break;
+    moves.push_back(Move(x, y));
+    break;
   }
-
 }
-void AddDownRightMoves(Piece const* piece, const ChessBoard& board, bool max_dist, std::vector<Move>& moves) {
+void AddDownRightMoves(Piece const* piece, ChessBoard const& board,
+                       bool max_dist, std::vector<Move>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x++;
   y++;
@@ -65,14 +71,17 @@ void AddDownRightMoves(Piece const* piece, const ChessBoard& board, bool max_dis
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y)); break;
+    moves.push_back(Move(x, y));
+    break;
   }
 }
+}  // namespace
+void DiagonalBehavior::AddDiagonalMoves(Piece const* piece,
+                                        ChessBoard const& board, bool max_dist,
+                                        std::vector<Move>& moves) {
+  AddUpLeftMoves(piece, board, max_dist, moves);
+  AddUpRightMoves(piece, board, max_dist, moves);
+  AddDownLeftMoves(piece, board, max_dist, moves);
+  AddDownRightMoves(piece, board, max_dist, moves);
 }
-void DiagonalBehavior::AddDiagonalMoves(Piece const* piece, const ChessBoard& board, bool max_dist, std::vector<Move>& moves) {
-  AddUpLeftMoves(piece, board, max_dist, moves); 
-  AddUpRightMoves(piece, board, max_dist, moves); 
-  AddDownLeftMoves(piece, board, max_dist, moves); 
-  AddDownRightMoves(piece, board, max_dist, moves); 
-}
-}
+}  // namespace chess

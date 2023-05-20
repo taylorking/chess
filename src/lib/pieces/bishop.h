@@ -3,11 +3,12 @@
 #include <piece.h>
 namespace chess {
 class Bishop : public Piece {
-  private:
-    std::vector<Move> GetRawMoves(const ChessBoard& board) const override;
-  public:
-    using Piece::Piece;
-    std::string GetName() const  override;
+ private:
+  std::vector<Move> GetRawMoves(ChessBoard const& board) const override;
+
+ public:
+  using Piece::Piece;
+  std::string GetName() const override;
 };
-}
+}  // namespace chess
 #endif

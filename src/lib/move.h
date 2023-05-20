@@ -3,11 +3,11 @@
 namespace chess {
 
 class Move {
-  public:
-    int x_;
-    int y_;
-    Move(int x, int y): x_(x), y_(y) {}
-    bool operator==(const Move& other) const = default;
+ public:
+  int x_;
+  int y_;
+  Move(int x, int y) : x_(x), y_(y) {}
+  bool operator==(Move const& other) const = default;
 };
-}
+}  // namespace chess
 #endif

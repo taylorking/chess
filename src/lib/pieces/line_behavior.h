@@ -7,8 +7,9 @@
 
 namespace chess {
 class LineBehavior {
-public: 
-  static void AddLineMoves(Piece const* piece, const ChessBoard& board, bool max_dist, std::vector<Move>& move);
+ public:
+  static void AddLineMoves(Piece const* piece, ChessBoard const& board,
+                           bool max_dist, std::vector<Move>& move);
 };
-}
+}  // namespace chess
 #endif
