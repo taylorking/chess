@@ -2,9 +2,10 @@
 #include <diagonal_behavior.h>
 namespace chess {
 
-std::vector<Move> Bishop::GetRawMoves(ChessBoard const& board) const {
-  std::vector<Move> results;
-  DiagonalBehavior::AddDiagonalMoves(this, board, false, results);
+std::unordered_set<Position> Bishop::GetRawMoves(
+    ChessBoard const& board) const {
+  std::unordered_set<Position> results;
+  DiagonalBehavior::AddDiagonalPositions(this, board, false, results);
   return results;
 }
 

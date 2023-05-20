@@ -1,6 +1,5 @@
-#include <board.h>
-
 #include <bishop.h>
+#include <board.h>
 #include <iostream>
 #include <king.h>
 #include <knight.h>
@@ -12,85 +11,75 @@
 namespace chess {
 
 template <typename T>
-void MakePieceAndGiveToPlayer(Player* player, ChessBoard& board, int x, int y) {
-  auto ptr = std::make_unique<T>(player->GetColor(), x, y);
+void MakePieceAndGiveToPlayer(PlayerPieces& player, Color color,
+                              ChessBoardStore& board, int x, int y) {
+  auto ptr = std::make_unique<T>(color, y, x);
   T* raw_ptr = ptr.get();
-  player->GivePieceToPlayer(std::move(ptr));
+  player.push_back(std::move(ptr));
   board[y][x] = raw_ptr;
 }
 
-ChessBoard Board::CreateBoard(Player* white, Player* black) {
-  ChessBoard board;
+ChessBoard::ChessBoard(PlayerPieces& white, PlayerPieces& black)
+    : white_king_position_(PositionFromPair(7, 4)),
+      black_king_position_(PositionFromPair(0, 4)) {
+  for (int i = 2; i <= 6; i++) {
+    for (int j = 0; j < 8; j++) {
+      board_[i][j] = nullptr;
+    }
+  }
+
+  for (int i = 0; i < 8; i++) {
+    MakePieceAndGiveToPlayer<Pawn>(white, Color::WHITE, board_, i, 6);
+    MakePieceAndGiveToPlayer<Pawn>(black, Color::BLACK, board_, i, 1);
+  }
+  MakePieceAndGiveToPlayer<Rook>(white, Color::WHITE, board_, 0, 7);
+  MakePieceAndGiveToPlayer<Rook>(white, Color::WHITE, board_, 7, 7);
+  MakePieceAndGiveToPlayer<Rook>(black, Color::BLACK, board_, 0, 0);
+  MakePieceAndGiveToPlayer<Rook>(black, Color::BLACK, board_, 7, 0);
+
+  MakePieceAndGiveToPlayer<Knight>(white, Color::WHITE, board_, 1, 7);
+  MakePieceAndGiveToPlayer<Knight>(white, Color::WHITE, board_, 6, 7);
+  MakePieceAndGiveToPlayer<Knight>(black, Color::BLACK, board_, 1, 0);
+  MakePieceAndGiveToPlayer<Knight>(black, Color::BLACK, board_, 6, 0);
+
+  MakePieceAndGiveToPlayer<Bishop>(white, Color::WHITE, board_, 2, 7);
+  MakePieceAndGiveToPlayer<Bishop>(white, Color::WHITE, board_, 5, 7);
+  MakePieceAndGiveToPlayer<Bishop>(black, Color::BLACK, board_, 2, 0);
+  MakePieceAndGiveToPlayer<Bishop>(black, Color::BLACK, board_, 5, 0);
+
+  MakePieceAndGiveToPlayer<Queen>(white, Color::WHITE, board_, 3, 7);
+  MakePieceAndGiveToPlayer<Queen>(black, Color::BLACK, board_, 3, 0);
+
+  MakePieceAndGiveToPlayer<King>(white, Color::WHITE, board_, 4, 7);
+  MakePieceAndGiveToPlayer<King>(black, Color::BLACK, board_, 4, 0);
+}
+
+ChessBoard::ChessBoard(PlayerPieces& white, PlayerPieces& black,
+                       ChessBoard const& board) {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      board[i][j] = nullptr;
-    }
-  }
-
-  for (int i = 0; i < 8; i++) {
-    MakePieceAndGiveToPlayer<Pawn>(white, board, i, 6);
-    MakePieceAndGiveToPlayer<Pawn>(black, board, i, 1);
-  }
-  MakePieceAndGiveToPlayer<Rook>(white, board, 0, 7);
-  MakePieceAndGiveToPlayer<Rook>(white, board, 7, 7);
-  MakePieceAndGiveToPlayer<Rook>(black, board, 0, 0);
-  MakePieceAndGiveToPlayer<Rook>(black, board, 7, 0);
-
-  MakePieceAndGiveToPlayer<Knight>(white, board, 1, 7);
-  MakePieceAndGiveToPlayer<Knight>(white, board, 6, 7);
-  MakePieceAndGiveToPlayer<Knight>(black, board, 1, 0);
-  MakePieceAndGiveToPlayer<Knight>(black, board, 6, 0);
-
-  MakePieceAndGiveToPlayer<Bishop>(white, board, 2, 7);
-  MakePieceAndGiveToPlayer<Bishop>(white, board, 5, 7);
-  MakePieceAndGiveToPlayer<Bishop>(black, board, 2, 0);
-  MakePieceAndGiveToPlayer<Bishop>(black, board, 5, 0);
-
-  MakePieceAndGiveToPlayer<Queen>(white, board, 3, 7);
-  MakePieceAndGiveToPlayer<Queen>(black, board, 3, 0);
-
-  MakePieceAndGiveToPlayer<King>(white, board, 4, 7);
-  MakePieceAndGiveToPlayer<King>(black, board, 4, 0);
-
-  return board;
-}
-
-/**
-Board::Board(Player* white, Player* black) {
-  board_ = MakeNewChessBoard(white, black);
-}
-**/
-
-std::string Board::PrintBoard(ChessBoard const& board) {
-  char header_char = 'A';
-  int header_int = 1;
-  std::stringstream boardstr;
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 10; j++) {
-      boardstr << ' ';
-      if (i == 0 || i == 9) {
-        boardstr << header_char << ' ';
-        header_char++;
+      if (board[i][j] == nullptr) {
+        board_[i][j] = nullptr;
         continue;
-      } else if (j == 0) {
-        boardstr << header_int;
-        continue;
-      } else if (j == 9) {
-        boardstr << header_int;
-        header_int++;
-        continue;
-      } else {
-        header_char = 'A';
-        if (board[i - 1][j - 1] == nullptr) {
-          boardstr << ' ';
-        } else {
-          boardstr << board[i - 1][j - 1]->ToString();
-        }
       }
-      boardstr << ' ';
+      auto piece = board[i][j]->clone();
+      board_[i][j] = piece.get();
+      auto& player = piece->GetColor() == Color::WHITE ? white : black;
+      player.push_back(std::move(piece));
     }
-    boardstr << std::endl;
   }
-  return boardstr.str();
+}
+ChessBoard::ChessBoard(ChessBoardStore&& board, Position white, Position black)
+    : board_(std::move(board)),
+      white_king_position_(white),
+      black_king_position_(black) {}
+
+void ChessBoard::ApplyMove(Position old_position, Position move) {
+  auto [old_x, old_y] = PositionToPair(old_position);
+  auto [new_x, new_y] = PositionToPair(move);
+  Piece* piece = board_[old_x][old_y];
+  board_[new_x][new_y] = piece;
+  board_[old_x][old_y] = nullptr;
+  piece->ApplyMove(move);
 }
 }  // namespace chess

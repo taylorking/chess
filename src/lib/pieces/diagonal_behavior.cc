@@ -1,87 +1,88 @@
 #include <diagonal_behavior.h>
+#include <position.h>
 
 namespace chess {
 namespace {
 
-void AddUpLeftMoves(Piece const* piece, ChessBoard const& board, bool max_dist,
-                    std::vector<Move>& moves) {
+void AddUpLeftPositions(Piece const* piece, ChessBoard const& board,
+                        bool max_dist, std::unordered_set<Position>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x--;
   y--;
   while (x >= 0 && y >= 0) {
     if (board[x][y] == nullptr) {
-      moves.push_back(Move(x, y));
+      moves.insert(PositionFromPair(x, y));
       x--;
       y--;
       if (max_dist) break;
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y));
+    moves.insert(PositionFromPair(x, y));
     break;
   }
 }
-void AddUpRightMoves(Piece const* piece, ChessBoard const& board, bool max_dist,
-                     std::vector<Move>& moves) {
+void AddUpRightPositions(Piece const* piece, ChessBoard const& board,
+                         bool max_dist, std::unordered_set<Position>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x--;
   y++;
   while (x >= 0 && y <= 7) {
     if (board[x][y] == nullptr) {
-      moves.push_back(Move(x, y));
+      moves.insert(PositionFromPair(x, y));
       x--;
       y++;
       if (max_dist) break;
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y));
+    moves.insert(PositionFromPair(x, y));
     break;
   }
 }
-void AddDownLeftMoves(Piece const* piece, ChessBoard const& board,
-                      bool max_dist, std::vector<Move>& moves) {
+void AddDownLeftPositions(Piece const* piece, ChessBoard const& board,
+                          bool max_dist, std::unordered_set<Position>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x++;
   y--;
   while (x <= 7 && y >= 0) {
     if (board[x][y] == nullptr) {
-      moves.push_back(Move(x, y));
+      moves.insert(PositionFromPair(x, y));
       x++;
       y--;
       if (max_dist) break;
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y));
+    moves.insert(PositionFromPair(x, y));
     break;
   }
 }
-void AddDownRightMoves(Piece const* piece, ChessBoard const& board,
-                       bool max_dist, std::vector<Move>& moves) {
+void AddDownRightPositions(Piece const* piece, ChessBoard const& board,
+                           bool max_dist, std::unordered_set<Position>& moves) {
   auto [x, y] = piece->GetCoordinates();
   x++;
   y++;
   while (x <= 7 && y <= 7) {
     if (board[x][y] == nullptr) {
-      moves.push_back(Move(x, y));
+      moves.insert(PositionFromPair(x, y));
       x++;
       y++;
       if (max_dist) break;
       continue;
     }
     if (board[x][y]->GetColor() == piece->GetColor()) break;
-    moves.push_back(Move(x, y));
+    moves.insert(PositionFromPair(x, y));
     break;
   }
 }
 }  // namespace
-void DiagonalBehavior::AddDiagonalMoves(Piece const* piece,
-                                        ChessBoard const& board, bool max_dist,
-                                        std::vector<Move>& moves) {
-  AddUpLeftMoves(piece, board, max_dist, moves);
-  AddUpRightMoves(piece, board, max_dist, moves);
-  AddDownLeftMoves(piece, board, max_dist, moves);
-  AddDownRightMoves(piece, board, max_dist, moves);
+void DiagonalBehavior::AddDiagonalPositions(
+    Piece const* piece, ChessBoard const& board, bool max_dist,
+    std::unordered_set<Position>& moves) {
+  AddUpLeftPositions(piece, board, max_dist, moves);
+  AddUpRightPositions(piece, board, max_dist, moves);
+  AddDownLeftPositions(piece, board, max_dist, moves);
+  AddDownRightPositions(piece, board, max_dist, moves);
 }
 }  // namespace chess

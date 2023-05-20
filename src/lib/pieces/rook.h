@@ -2,12 +2,13 @@
 #define CHESS_LIB_PIECES_ROOK
 #include <piece.h>
 namespace chess {
-class Rook : public Piece {
- private:
-  std::vector<Move> GetRawMoves(ChessBoard const& board) const override;
+class Rook : public ClonablePiece<Rook> {
+ protected:
+  std::unordered_set<Position> GetRawMoves(
+      ChessBoard const& board) const override;
 
  public:
-  using Piece::Piece;
+  using ClonablePiece::ClonablePiece;
   std::string GetName() const override;
 };
 }  // namespace chess

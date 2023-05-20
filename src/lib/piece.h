@@ -3,13 +3,16 @@
 
 #include <board.h>
 #include <color.h>
-#include <move.h>
+#include <memory>
+#include <position.h>
 #include <string>
-#include <vector>
+#include <unordered_set>
 
 namespace chess {
+
+class GameState;
+class ChessBoard;
 class Piece;
-using ChessBoard = std::array<std::array<Piece*, 8>, 8>;
 
 class Piece {
  protected:
@@ -17,14 +20,28 @@ class Piece {
   int x_;
   int y_;
   virtual std::string GetName() const = 0;
-  virtual std::vector<Move> GetRawMoves(ChessBoard const& board) const = 0;
+  virtual std::unordered_set<Position> GetRawMoves(ChessBoard const&) const = 0;
 
  public:
   std::string ToString() const;
-  std::vector<Move> GetMoves(ChessBoard const& board) const;
+  std::unordered_set<Position> GetMoves(GameState const&) const;
   Color GetColor() const;
-  explicit Piece(Color color, int x, int y);
   std::pair<int, int> GetCoordinates() const;
+
+  virtual std::unique_ptr<Piece> clone() const = 0;
+  explicit Piece(Color color, int x, int y);
+  explicit Piece(Piece const& p) = default;
+  void ApplyMove(Position);
 };
+
+template <class T>
+class ClonablePiece : public Piece {
+ public:
+  using Piece::Piece;
+  virtual std::unique_ptr<Piece> clone() const {
+    return std::make_unique<T>(static_cast<T const&>(*this));
+  }
+};
+
 }  // namespace chess
 #endif

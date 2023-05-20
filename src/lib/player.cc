@@ -6,7 +6,7 @@ Player::Player(Color color) : color_(color) {}
 
 std::vector<Piece const*> Player::GetPieces() const {
   std::vector<Piece const*> result;
-  std::transform(player_pieces_.begin(), player_pieces_.end(),
+  std::transform(player_pieces_->begin(), player_pieces_->end(),
                  std::back_inserter(result),
                  [](std::unique_ptr<Piece> const& piece) -> Piece const* {
                    return piece.get();
@@ -14,10 +14,10 @@ std::vector<Piece const*> Player::GetPieces() const {
   return result;
 }
 
-Color Player::GetColor() { return color_; }
+Color Player::GetColor() const { return color_; }
 
-void Player::GivePieceToPlayer(std::unique_ptr<Piece> piece) {
-  player_pieces_.push_back(std::move(piece));
+void Player::SetPlayerPieces(PlayerPieces* pieces) { player_pieces_ = pieces; }
+std::unique_ptr<Piece> Player::TakePieceFromPlayer(Piece const* piece) {
+  return nullptr;
 }
-
 }  // namespace chess

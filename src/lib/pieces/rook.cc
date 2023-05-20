@@ -3,9 +3,9 @@
 
 namespace chess {
 
-std::vector<Move> Rook::GetRawMoves(ChessBoard const& board) const {
-  std::vector<Move> result;
-  LineBehavior::AddLineMoves(this, board, false, result);
+std::unordered_set<Position> Rook::GetRawMoves(ChessBoard const& board) const {
+  std::unordered_set<Position> result;
+  LineBehavior::AddLinePositions(this, board, false, result);
   return result;
 }
 std::string Rook::GetName() const { return "R"; }

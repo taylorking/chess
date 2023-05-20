@@ -1,6 +1,7 @@
+#include <game_state.h>
 #include <piece.h>
-
 namespace chess {
+
 Piece::Piece(Color color, int x, int y) : color_(color), x_(x), y_(y) {}
 
 std::string Piece::ToString() const {
@@ -22,10 +23,15 @@ Color Piece::GetColor() const { return color_; }
 
 std::pair<int, int> Piece::GetCoordinates() const { return {x_, y_}; }
 
-std::vector<Move> Piece::GetMoves(ChessBoard const& board) const {
-  auto moves = this->GetRawMoves(board);
-
+std::unordered_set<Position> Piece::GetMoves(GameState const& state) const {
+  auto moves = this->GetRawMoves(*state.GetBoard());
   return moves;
+}
+
+void Piece::ApplyMove(Position move) {
+  auto [x, y] = PositionToPair(move);
+  x_ = x;
+  y_ = y;
 }
 
 }  // namespace chess
