@@ -1,5 +1,6 @@
-#include <bishop.h>
 #include <board.h>
+
+#include <bishop.h>
 #include <iostream>
 #include <king.h>
 #include <knight.h>

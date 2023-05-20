@@ -14,13 +14,17 @@ TEST(RookTests, TestCapturePiece) {
   Piece* w = &white_piece;
   Piece* b = &black_piece;
   auto rook = std::make_unique<Rook>(Color::WHITE, 7, 7);
-  ChessBoard board{b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
-                   n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n,
-                   n, n, n, n, n, n, n, n, n, n, n, w, n, n, n, n,
-                   w, w, w, n, w, w, w, n, w, w, w, w, w, w, w, rook.get()};
+  ChessBoard board{b, b, b, b, b, b, b, b, 
+                   b, b, b, b, b, b, b, b,
+                   n, n, n, n, n, n, n, n, 
+                   n, n, n, n, n, n, n, n,
+                   n, n, n, n, n, n, n, n, 
+                   n, n, n, w, n, n, n, n,
+                   w, w, w, n, w, w, w, n, 
+                   w, w, w, w, w, w, w, rook.get()};
   EXPECT_THAT(rook->GetMoves(board),
-              UnorderedElementsAre(Move(7, 6), Move(7, 5), Move(7, 4),
-                                   Move(7, 3), Move(7, 2), Move(7, 1)));
+              UnorderedElementsAre(Move(6,7), Move(5,7), Move(4,7),
+                                   Move(3,7), Move(2,7), Move(1,7)));
 }
 
 TEST(RookTests, TestAllMoveDirections) {
